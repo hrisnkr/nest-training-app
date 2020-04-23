@@ -1,9 +1,19 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  UseInterceptors,
+  UseGuards,
+} from '@nestjs/common';
 import { Todo } from './todo';
 import { TodoService } from './todo.service';
 import { get } from 'http';
+import { LoggerInterceptor } from 'src/logger.interceptor';
+import { TokenGuard } from 'src/token.guard';
 
 @Controller('todo')
+@UseInterceptors(LoggerInterceptor)
+@UseGuards(TokenGuard)
 export class TodoController {
   constructor(readonly todoRepo: TodoService) {}
 
