@@ -18,7 +18,12 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "build:docker": "docker build --rm -t application .",
+    "build:docker-proxy": "docker build --build-arg HTTPS_PROXY=http://docker.for.win.localhost:9000/localproxy.pac --rm -t application .",
+    "start:docker": "docker run -p 3000:3000 -d --name application application",
+    "delete:docker": "docker container rm application -f",
+    "test:docker": "curl http://localhost:3000/todo --header 'authorization: token npm'"
   },
   "dependencies": {
     "@nestjs/common": "^7.0.0",
