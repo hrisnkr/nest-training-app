@@ -4,10 +4,13 @@ import {
   Param,
   UseInterceptors,
   UseGuards,
+  Body,
+  Post,
+  NotFoundException,
+  Put,
 } from '@nestjs/common';
 import { Todo } from './todo';
 import { TodoService } from './todo.service';
-import { get } from 'http';
 import { LoggerInterceptor } from 'src/logger.interceptor';
 import { TokenGuard } from 'src/token.guard';
 
@@ -25,6 +28,25 @@ export class TodoController {
 
   @Get('/:id')
   public async getItem(@Param('id') id: string): Promise<Todo> {
-    return await this.todoRepo.getItem(id);
+    const item = await this.todoRepo.getItem(id);
+    if (!item) {
+      throw new NotFoundException('Item not found!');
+    }
+    return item;
+  }
+
+  @Post()
+  public async createItem(@Body() newItem: Partial<Todo>): Promise<Todo> {
+    const item = await this.todoRepo.createItem(newItem);
+    return item;
+  }
+
+  @Put('/:id')
+  public async updateItem(
+    @Body() updateItem: Partial<Todo>,
+    @Param('id') id: string,
+  ): Promise<Todo> {
+    const item = await this.todoRepo.updateItem(id, updateItem);
+    return item;
   }
 }
